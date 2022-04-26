@@ -18,9 +18,39 @@
   p {
     margin: 0;
   }
+
+  .search-form {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 25px;
+    margin-left: 10px;
+  }
+
+  .search-form:focus {
+    box-shadow: none;
+    border: 2px solid blue
+}
+
+  .btn {
+    display: block;
+    margin-left: 10px;
+  }
   
   img {
-    max-width: 100%;
+    max-width: 250px;
     display: block;
+    height: 200px;
+  }
+
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .gallery-item {
+    display: flex;
+    flex-direction: column;
+    
   }
   

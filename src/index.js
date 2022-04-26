@@ -1,66 +1,45 @@
 
 import "./css/style.css"
 import { Notify } from "notiflix"
-import axios from "axios"
 import { getPhotos } from "./js/api";
+import NewsApiService from "./js/api";
+import { renderGallery } from "./js/render-photos";
 
-const inputSearch = document.querySelector(`input`);
-console.log(inputSearch)
+
+const inputSearch = document.querySelector(`.search-form`);
 const btnSearch = document.querySelector(`.btn`);
-console.log(btnSearch)
-const gallery = document.querySelector(`.gallery`)
-console.log(gallery)
+const btnLoadMore = document.querySelector(`.load-more`)
+const gallery = document.querySelector('.gallery');
+
+// const API_KAY = `26979383-64bf469f69381b7a5cedcba95`;
+// const BASE_URL = `https://pixabay.com/api/`;
+// const OPTIONS = `image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`
+
+const newsApiService = new NewsApiService()
 
 
+inputSearch.addEventListener(`submit`, onInputSearch);
+btnLoadMore.addEventListener(`click`, onBtnLoadMore);
 
-let data = ``;
-btnSearch.addEventListener(`submit`, onInputSearch);
 
 function onInputSearch(event) {
-    event.ppreventDefault()
-    const hits = inputSearch.searchQuery.value.trim();
-    console.log(hits)
-
-}
-
-getPhotos(hits).then(renderPhotoCard).catch();
-
-function renderPhotoCard() {
+    event.preventDefault()
     gallery.innerHTML = ``;
-    if(name.length === 0) {
-        Notify.failure(`Sorry, there are no images matching your search query. Please try again.`)
+    newsApiService.query = event.currentTarget.elements.searchQuery.value;
+    newsApiService.resetPage();
+    newsApiService.fetchPhotos().then(renderGallery)
+
+    if(newsApiService.query === ``) {
+      return Notify.info(`Please enter a search word.`)
     }
-    return makePhotoCard()
+
 }
 
-function makePhotoCard({data}) {
-    const markup = data.map(({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) => {
-        return `<div class="photo-card">
-        <a class="gallery-item" href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
-        <div class="info">
-          <p class="info-item">
-            <b>Likes: </b></br>${likes}
-          </p>
-          <p class="info-item">
-            <b>Views:</b></br>${views}
-          </p>
-          <p class="info-item">
-            <b>Comments:</b></br>${comments}
-          </p>
-          <p class="info-item">
-            <b>Dowloads:</b></br>${downloads}
-          </p>
-        </div>
-      </div>`
-    }).join(``);
-gallery.innerHTML = markup
+function onBtnLoadMore(event) {
+     newsApiService.fetchPhotos().then(renderGallery)
+    
 }
-// webformatURL - посилання на маленьке зображення для списку карток.
-// largeImageURL - посилання на велике зображення.
-// tags - рядок з описом зображення. Підійде для атрибуту alt.
-// likes - кількість лайків.
-// views - кількість переглядів.
-// comments - кількість коментарів.
-// downloads - кількість завантажень.
+
+
 
 
