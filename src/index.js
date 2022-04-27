@@ -3,43 +3,56 @@ import "./css/style.css"
 import { Notify } from "notiflix"
 import { getPhotos } from "./js/api";
 import NewsApiService from "./js/api";
+import { BtnLoadMore } from "./js/btn-load-more";
 import { renderGallery } from "./js/render-photos";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 const inputSearch = document.querySelector(`.search-form`);
 const btnSearch = document.querySelector(`.btn`);
-const btnLoadMore = document.querySelector(`.load-more`)
 const gallery = document.querySelector('.gallery');
 
-// const API_KAY = `26979383-64bf469f69381b7a5cedcba95`;
-// const BASE_URL = `https://pixabay.com/api/`;
-// const OPTIONS = `image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`
 
 const newsApiService = new NewsApiService()
+const btnLoadMore = new BtnLoadMore({selector: `.load-more`, hidden: true});
+
+const lightbox = new SimpleLightbox(`.gallery a`, {
+  captionsData: 'alt',
+  captionType: 'alt',
+  captionDelay: 200,
+  captionPosition: 'bottom',
+});
 
 
 inputSearch.addEventListener(`submit`, onInputSearch);
-btnLoadMore.addEventListener(`click`, onBtnLoadMore);
+btnLoadMore.refs.button.addEventListener(`click`, fetchCardPhotos);
 
 
 function onInputSearch(event) {
     event.preventDefault()
-    gallery.innerHTML = ``;
-    newsApiService.query = event.currentTarget.elements.searchQuery.value;
-    newsApiService.resetPage();
-    newsApiService.fetchPhotos().then(renderGallery)
-
+    newsApiService.query = event.currentTarget.elements.searchQuery.value.trim();
     if(newsApiService.query === ``) {
       return Notify.info(`Please enter a search word.`)
     }
 
+    btnLoadMore.show()
+    newsApiService.resetPage();
+    clearPhotoCard()
+    fetchCardPhotos();
 }
 
-function onBtnLoadMore(event) {
-     newsApiService.fetchPhotos().then(renderGallery)
-    
+
+function fetchCardPhotos() {
+  btnLoadMore.disabled();
+
+  newsApiService.fetchPhotos().then(renderGallery)
+  lightbox.refresh();
+  btnLoadMore.enable()
 }
 
 
-
+function clearPhotoCard() {
+  gallery.innerHTML = ``;
+}
 
