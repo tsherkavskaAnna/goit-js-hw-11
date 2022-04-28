@@ -54,7 +54,7 @@ function fetchCardPhotos() {
       } 
       renderGallery(hits);
       lightbox.refresh();
-      pageScroll();
+      
        if(gallery.children.length > totalHits) {
          Notify.info(`We're sorry, but you've reached the end of search results.`)
          btnLoadMore.hide();
@@ -70,16 +70,6 @@ function clearPhotoCard() {
   gallery.innerHTML = ``;
 }
 
-
-function pageScroll() {
-  const { height: cardHeight } = gallery
-  .firstElementChild.getBoundingClientRect();
-
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
-}
 
     
     
