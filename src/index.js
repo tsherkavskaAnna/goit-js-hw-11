@@ -54,22 +54,36 @@ function fetchCardPhotos() {
       } 
       renderGallery(hits);
       lightbox.refresh();
-       if(gallery.children.length === totalHits) {
+      pageScroll();
+       if(gallery.children.length > totalHits) {
          Notify.info(`We're sorry, but you've reached the end of search results.`)
          btnLoadMore.hide();
       }else {
         Notify.info(`Hooray! We found ${totalHits} images.`);
         btnLoadMore.enable();
         btnLoadMore.show();
-
       }
       })  
 }
-    
-    
-
 
 function clearPhotoCard() {
   gallery.innerHTML = ``;
 }
+
+
+function pageScroll() {
+  const { height: cardHeight } = gallery
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+}
+
+    
+    
+
+
+
 
