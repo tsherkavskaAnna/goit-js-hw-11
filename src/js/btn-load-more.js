@@ -13,14 +13,16 @@ class BtnLoadMore {
         return refs;
     }
 
-    disabled() {
-        this.refs.button.disabled = true;
-        this.refs.label.textContent = `Loading...`;
-    }
     enable() {
         this.refs.button.disabled = false;
         this.refs.label.textContent = 'Load more';
     }
+
+    disabled() {
+        this.refs.button.disabled = true;
+        this.refs.label.textContent = `Loading...`;
+    }
+    
     show() {
         this.refs.button.classList.remove(`is-hidden`);
     }
